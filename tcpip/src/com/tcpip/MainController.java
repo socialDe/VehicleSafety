@@ -67,7 +67,6 @@ public class MainController {
 				+ "AAAArEyZKFc:APA91bFbensIi5nImV_Hsz4JRvHGwDCHPLjEgWc6th59MxVvgG--1OrFQLzaYcJnRZJK5Z2qp0vKuE-CsXR7rDHRtrTEyLvqdwAEzN8WmGOukUf1dsobAcQmBT2Sx_MigKhIRXBwC2b7");
 
 		// create notification message into JSON format
-		
 		JSONObject message = new JSONObject();
 		message.put("to", "/topics/tcpip");
 		message.put("priority", "high");
@@ -110,10 +109,66 @@ public class MainController {
 	   public void car(HttpServletRequest request) {
 	      String ip = request.getParameter("ip");
 	      String sensor = request.getParameter("sensor");
-	       String msg = ip+" "+sensor;
-	       client.sendTarget("/192.168.0.38",msg);
-	       
-	       System.out.println(msg);
+	      String msg = ip+" "+sensor;
+	      client.sendTarget("/192.168.0.38",msg);
 	      
+	      System.out.println(msg);
+	      
+	      // 명령 코드 확인
+	      // 새로운 수신 메시지일 경우에만 FCM 전송
+	      String code = request.getParameter("code");
+	      if(code.equals("U")) {
+			// FCM setting
+			URL url = null;
+			try {
+				url = new URL("https://fcm.googleapis.com/fcm/send");
+			} catch (MalformedURLException e) {
+				System.out.println("Error while creating Firebase URL | MalformedURLException");
+				e.printStackTrace();
+			}
+			HttpURLConnection conn = null;
+			try {
+				conn = (HttpURLConnection) url.openConnection();
+			} catch (IOException e) {
+				System.out.println("Error while createing connection with Firebase URL | IOException");
+				e.printStackTrace();
+			}
+			conn.setUseCaches(false);
+			conn.setDoInput(true);
+			conn.setDoOutput(true);
+			conn.setRequestProperty("Content-Type", "application/json");
+
+			// set my firebase server key
+			conn.setRequestProperty("Authorization", "key="
+					+ "AAAArEyZKFc:APA91bFbensIi5nImV_Hsz4JRvHGwDCHPLjEgWc6th59MxVvgG--1OrFQLzaYcJnRZJK5Z2qp0vKuE-CsXR7rDHRtrTEyLvqdwAEzN8WmGOukUf1dsobAcQmBT2Sx_MigKhIRXBwC2b7");
+			
+
+			// create notification message into JSON format
+			JSONObject message = new JSONObject();
+			message.put("to", "/topics/message");
+			message.put("priority", "high");
+			
+			JSONObject notification = new JSONObject();
+			notification.put("title", ip);
+			notification.put("body", sensor);
+			message.put("notification", notification);
+			
+			JSONObject data = new JSONObject();
+			data.put("control", "control1");
+			data.put("data", 100);
+			message.put("data", data);
+
+			try {
+				OutputStreamWriter out = new OutputStreamWriter(conn.getOutputStream(), "UTF-8");
+				out.write(message.toString());
+				out.flush();
+				conn.getInputStream();
+				System.out.println("OK...............");
+
+			} catch (IOException e) {
+				System.out.println("Error while writing outputstream to firebase sending to ManageApp | IOException");
+				e.printStackTrace();
+			}
+	      }
 	   }
 }
