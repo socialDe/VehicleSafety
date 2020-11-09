@@ -218,14 +218,29 @@ public class Client {
       
       //System.out.println("-----test-----");
       
-      // 5초에 한번씩 랜덤좌표를 전달하는 작업 
+
+      // can으로 전송받은 데이터
+      String candata = "";
+      
+      // 5초에 한번씩 랜덤좌표를 전달하는 작업
       while(true) {
          //이 안에 전체가 있어야 한다! 
          try {
             Random rd = new Random();
             //double sensor = rd.nextDouble()*100;
             String sensor = ss.getSen();
+            
             url = new URL(urlstr+"?ip="+ip+"&sensor="+sensor);
+            
+
+            // SR: can 명령코드 추출
+            // 이전과 같지 않은 데이터일 경우에만 코드도 함께 전송
+            String code = sensor.substring(0, 1);
+            if(!sensor.equals(candata)) {
+            	url = new URL(urlstr+"?ip="+ip+"&sensor="+sensor+"&code"+code);
+            	candata = sensor;
+            }
+            
             con = (HttpURLConnection) url.openConnection();
             con.setReadTimeout(10000); // 10초동안 응답이 없으면 타임아웃 
             con.setRequestMethod("POST"); // 어떤 방식으로 보낼지 

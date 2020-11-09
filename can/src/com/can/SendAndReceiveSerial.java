@@ -164,7 +164,8 @@ public class SendAndReceiveSerial implements SerialPortEventListener {
             String ss = new String(readBuffer);
             System.out.println("Receive Low Data:" + ss + "||");
 
-            sen = ss;
+            // SR: can data만 저장
+            sen = ss.substring(1, (27));
             
          } catch (Exception e) {
             e.printStackTrace();
