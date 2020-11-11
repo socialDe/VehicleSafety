@@ -170,7 +170,7 @@ public class Client {
 	}
 	
 	public static void main(String[] args) {
-		Client client = new Client("192.168.0.38",5555,
+		Client client = new Client("192.168.0.37",5558,
 				"[Jaeuk]");
 		try {
 			client.connect();

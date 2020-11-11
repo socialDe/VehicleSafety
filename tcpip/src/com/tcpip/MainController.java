@@ -20,7 +20,7 @@ public class MainController {
 	
 	Client client;
 	public MainController() {
-		client = new Client("192.168.0.38",5555,"[WEB]");
+		client = new Client("192.168.0.37",5558,"[WEB]");
 		try {
 			client.connect();
 		} catch (IOException e) {
@@ -64,11 +64,11 @@ public class MainController {
 
 		// set my firebase server key
 		conn.setRequestProperty("Authorization", "key="
-				+ "AAAArEyZKFc:APA91bFbensIi5nImV_Hsz4JRvHGwDCHPLjEgWc6th59MxVvgG--1OrFQLzaYcJnRZJK5Z2qp0vKuE-CsXR7rDHRtrTEyLvqdwAEzN8WmGOukUf1dsobAcQmBT2Sx_MigKhIRXBwC2b7");
+				+ "AAAAK89FyMY:APA91bGxNwkQC6S_QQAKbn3COepWgndhyyjynT8ZvIEarTaGpEfMA1SPFo-ReN8b9uO21R1OfSOpNhfYbQaeohKP_sKzsgVTxu7K5tmzcjEfHzlgXRFrB1r0uqhfxLp4p836lbKw_iaN");
 
 		// create notification message into JSON format
 		JSONObject message = new JSONObject();
-		message.put("to", "/topics/tcpip");
+		message.put("to", "/topics/car");
 		message.put("priority", "high");
 		
 		JSONObject notification = new JSONObject();
@@ -97,27 +97,27 @@ public class MainController {
 		
 		System.out.println("phone Send End...");
 	}
-	@RequestMapping("/sendmtoiot.mc") // 메시지 전송 to IoT
-	public ModelAndView sendMtoIoT(ModelAndView mv, String iot_id, String iot_contents) {
-		System.out.println("Send Message to IoT Start...");
-		System.out.println(iot_id+"에게 "+iot_contents+"전송.");
-		client.sendTarget("/192.168.0.8", iot_id+"는"+iot_contents+"해라.");
-		mv.setViewName("main");
-		return mv;
-	}
+//	@RequestMapping("/sendmtoiot.mc") // 메시지 전송 to IoT
+//	public ModelAndView sendMtoIoT(ModelAndView mv, String iot_id, String iot_contents) {
+//		System.out.println("Send Message to IoT Start...");
+//		System.out.println(iot_id+"에게 "+iot_contents+"전송.");
+//		client.sendTarget("/192.168.0.8", iot_id+"는"+iot_contents+"해라.");
+//		mv.setViewName("main");
+//		return mv;
+//	}
 	@RequestMapping("/car.mc")
 	   public void car(HttpServletRequest request) {
 	      String ip = request.getParameter("ip");
 	      String sensor = request.getParameter("sensor");
 	      String msg = ip+" "+sensor;
-	      client.sendTarget("/192.168.0.38",msg);
+	      client.sendTarget("/192.168.0.64",msg);
 	      
-	      System.out.println(msg);
+	      System.out.println(msg+"test!!!!!");
 	      
 	      // 명령 코드 확인
 	      // 새로운 수신 메시지일 경우에만 FCM 전송
 	      String code = request.getParameter("code");
-	      if(code.equals("U")) {
+	      //if(code.equals("U")) {
 			// FCM setting
 			URL url = null;
 			try {
@@ -140,12 +140,12 @@ public class MainController {
 
 			// set my firebase server key
 			conn.setRequestProperty("Authorization", "key="
-					+ "AAAArEyZKFc:APA91bFbensIi5nImV_Hsz4JRvHGwDCHPLjEgWc6th59MxVvgG--1OrFQLzaYcJnRZJK5Z2qp0vKuE-CsXR7rDHRtrTEyLvqdwAEzN8WmGOukUf1dsobAcQmBT2Sx_MigKhIRXBwC2b7");
+					+ "AAAAK89FyMY:APA91bGxNwkQC6S_QQAKbn3COepWgndhyyjynT8ZvIEarTaGpEfMA1SPFo-ReN8b9uO21R1OfSOpNhfYbQaeohKP_sKzsgVTxu7K5tmzcjEfHzlgXRFrB1r0uqhfxLp4p836lbKw_iaN");
 			
 
 			// create notification message into JSON format
 			JSONObject message = new JSONObject();
-			message.put("to", "/topics/message");
+			message.put("to", "/topics/car");
 			message.put("priority", "high");
 			
 			JSONObject notification = new JSONObject();
@@ -169,6 +169,6 @@ public class MainController {
 				System.out.println("Error while writing outputstream to firebase sending to ManageApp | IOException");
 				e.printStackTrace();
 			}
-	      }
+	      //}
 	   }
 }
